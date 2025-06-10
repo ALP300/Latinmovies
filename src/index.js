@@ -8,6 +8,7 @@ const __dirname = dirname(fileURLToPath(import.meta.url));
 console.log(`Server running in ${__dirname}`);
 
 app.set('views', join(__dirname, 'views'));
+app.use(express.static(join(__dirname, 'public')));
 app.set('view engine', 'ejs');
 app.use(router);
 app.listen(3000, () => {
