@@ -14,13 +14,20 @@
     <script>
         async function getCartelera(){
             try {
-                const response = await fetch('https://localhost:3000/api/get-productos',{
-                    method: 'GET',
-                    headers: {
-                        'Content-Type': 'application/json'
+                const cartelera=[
+                    {
+                        "nombre": "Avatar",
+                        "descripcion": "James Cameron",
+                        "precio": "Ciencia Ficción",
+                        "imagen_url": "https://example.com/avatar.jpg"
+                    },
+                    {
+                        "nombre": "Titanic",
+                        "descripcion": "James Cameron",
+                        "precio": "Romance",
+                        "imagen_url": "https://example.com/titanic.jpg"
                     }
-                });
-                const cartelera= await response.json();
+                ]
                 cartelera.forEach(pelicula => {
                     const peliculaDiv = document.createElement('div');
                     peliculaDiv.className = 'pelicula';
