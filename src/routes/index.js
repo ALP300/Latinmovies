@@ -13,8 +13,19 @@ router.get("/cartelera", (req, res) => {
 });
 
 router.get('/api/get-productos', async (req, res) => {
-    const productos = await ConsultarProductos();
-    res.status(200).json(productos);
+    console.log('Request received for /api/get-productos'); // Debug log
+    try {
+        const productos = await ConsultarProductos();
+        if (!productos || productos.length === 0) {
+            console.log('No products found');
+            return res.status(404).json({ message: 'No se encontraron productos' });
+        }
+        console.log('Products sent:', productos);
+        res.status(200).json(productos);
+    } catch (error) {
+        console.error('Error in /api/get-productos:', error);
+        res.status(500).json({ error: 'Error al consultar los productos' });
+    }
 });
 
 

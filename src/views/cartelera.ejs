@@ -9,8 +9,36 @@
 <body>
      <%- include('partials/navigation') %>
     <h1> Esta es mi cartelera </h1>
-    <%- include('partials/bot') %>
 
+    <%- include('partials/bot') %>
+    <script>
+        async function getCartelera(){
+            try {
+                const response = await fetch('https://localhost:3000/api/get-productos',{
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                });
+                const cartelera= await response.json();
+                cartelera.forEach(pelicula => {
+                    const peliculaDiv = document.createElement('div');
+                    peliculaDiv.className = 'pelicula';
+                    peliculaDiv.innerHTML = `
+                        <h2>${pelicula.nombre}</h2>
+                        <p>Director: ${pelicula.descripcion}</p>
+                        <p>Género: ${pelicula.precio}</p>
+                        <img src="${pelicula.imagen_url}" alt="${pelicula.nombre}" style="width: 200px; height: auto;">
+                    `;
+                    document.body.appendChild(peliculaDiv);
+                });
+            } catch (error) {
+                console.error('Error fetching cartelera:', error);
+            }
+        }
+        getCartelera();
+
+    </script>
     
 </body>
 </html>
