@@ -38,3 +38,35 @@ export async function ConsultarProductos() {
         await cliente.end();
     }
 }
+export async function RegistrarCliente(username, password, email) {
+    const cliente = new Client(config);
+    try {
+       await cliente.connect();
+       const verficarQuery = 'SELECT * FROM clientes WHERE username = $1 OR email = $2';
+       const verificarValues = [username, email];
+       const verificarResultado = await cliente.query(verficarQuery, verificarValues);
+       if (verificarResultado.rows.length > 0) {
+           throw new Error('El nombre de usuario o el correo electrónico ya están en uso');
+       }
+       const saltRounds= 10;
+       const hashedPassword = await bcrypt.hash(password, saltRounds);
+
+       const insertQuery = `INSERT INTO clientes (username, password, email) VALUES ($1, $2, $3) RETURNING id, username, email`;
+       const insertarValues = [username, hashedPassword, email];
+       const resultado = await cliente.query(insertQuery, insertarValues);
+
+       return {
+            succes: true,
+            message: 'Cliente registrado exitosamente',
+            user: resultado.rows[0]
+       };
+    } catch (error) {
+        console.error('Error al registrar cliente:', error);
+        return {
+            success: false,
+            message: error.message || 'Error al registrar cliente'
+        };
+    } finally {
+        await cliente.end();
+    }
+}
