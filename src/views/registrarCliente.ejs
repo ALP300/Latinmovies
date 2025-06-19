@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Registrarse</title>
+    <%- include('partials/head') %> <%- include('partials/navigation') %>
+    <style>
+      .login-container {
+        background-color: #fff;
+        padding: 30px;
+        border-radius: 8px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        width: 100%;
+        max-width: 400px;
+        text-align: center;
+        margin-top: 20px;
+      }
+
+      h2 {
+        margin-bottom: 20px;
+        font-size: 24px;
+        color: #333;
+      }
+
+      .form-group {
+        margin-bottom: 15px;
+        text-align: left;
+      }
+
+      .form-group label {
+        font-size: 14px;
+        color: #555;
+      }
+
+      .form-group input {
+        width: 100%;
+        padding: 10px;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        font-size: 16px;
+        color: #333;
+        margin-top: 5px;
+      }
+
+      button {
+        width: 100%;
+        padding: 12px;
+        background-color: #007bff;
+        color: #fff;
+        border: none;
+        border-radius: 4px;
+        font-size: 16px;
+        cursor: pointer;
+        margin-top: 20px;
+        transition: background-color 0.3s ease;
+      }
+
+      button:hover {
+        background-color: #0056b3;
+      }
+
+      p {
+        margin-top: 15px;
+        font-size: 14px;
+      }
+
+      a {
+        color: #007bff;
+        text-decoration: none;
+      }
+
+      a:hover {
+        text-decoration: underline;
+      }
+    </style>
+  </head>
+
+  <body>
+    <div class="login-container">
+      <h2>Regístrate</h2>
+      <form id="registerForm">
+        <div class="form-group">
+          <label for="username">Usuario:</label>
+          <input type="text" id="username" name="username" required />
+        </div>
+        <div class="form-group">
+          <label for="email">Correo electrónico:</label>
+          <input type="email" id="email" name="email" required />
+        </div>
+        <div class="form-group">
+          <label for="password">Contraseña:</label>
+          <input type="password" id="password" name="password" required />
+        </div>
+        <button type="submit">Registrarse</button>
+      </form>
+      <p>¿Ya tienes una cuenta? <a href="/login">Inicia sesión aquí</a></p>
+    </div>
+
+    <script>
+      document
+        .getElementById("registerForm")
+        .addEventListener("submit", async function (event) {
+          event.preventDefault();
+
+          const username = document.getElementById("username").value;
+          const email = document.getElementById("email").value;
+          const password = document.getElementById("password").value;
+
+          try {
+            const response = await fetch(
+              "http://localhost:3000/api/registrar-cliente",
+              {
+                method: "POST",
+                headers: {
+                  "Content-Type": "application/json", // Asegúrate de incluir este header
+                },
+                body: JSON.stringify({ username, email, password }), // Enviar datos como JSON
+              }
+            );
+
+            const data = await response.json();
+
+            if (data.success) {
+              window.location.href = "/catalogo";
+            } else {
+              alert(data.message || "Error en el registro.");
+            }
+          } catch (error) {
+            console.error("Error al intentar registrarse:", error);
+            alert(
+              "Hubo un problema con la solicitud. Por favor, inténtalo nuevamente."
+            );
+          }
+        });
+    </script>
+  </body>
+</html>

@@ -42,7 +42,7 @@ export async function RegistrarCliente(username, password, email) {
     const cliente = new Client(config);
     try {
        await cliente.connect();
-       const verficarQuery = 'SELECT * FROM clientes WHERE username = $1 OR email = $2';
+       const verficarQuery = 'SELECT * FROM cliente WHERE username = $1 OR email = $2';
        const verificarValues = [username, email];
        const verificarResultado = await cliente.query(verficarQuery, verificarValues);
        if (verificarResultado.rows.length > 0) {
@@ -51,7 +51,7 @@ export async function RegistrarCliente(username, password, email) {
        const saltRounds= 10;
        const hashedPassword = await bcrypt.hash(password, saltRounds);
 
-       const insertQuery = `INSERT INTO clientes (username, password, email) VALUES ($1, $2, $3) RETURNING id, username, email`;
+       const insertQuery = `INSERT INTO cliente (username, password, email) VALUES ($1, $2, $3) RETURNING id, username, email`;
        const insertarValues = [username, hashedPassword, email];
        const resultado = await cliente.query(insertQuery, insertarValues);
 
