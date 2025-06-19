@@ -103,27 +103,42 @@
         .addEventListener("submit", async function (event) {
           event.preventDefault();
 
-          const username = document.getElementById("username").value;
-          const email = document.getElementById("email").value;
+          const username = document.getElementById("username").value.trim();
+          const email = document.getElementById("email").value.trim();
           const password = document.getElementById("password").value;
+
+          // Validaciones en el frontend
+          if (username.length < 3) {
+            alert("El nombre de usuario debe tener al menos 3 caracteres.");
+            return;
+          }
+          if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+            alert("Por favor, ingresa un correo electrónico válido.");
+            return;
+          }
+          if (password.length < 6) {
+            alert("La contraseña debe tener al menos 6 caracteres.");
+            return;
+          }
 
           try {
             const response = await fetch(
-              "http://localhost:3000/api/registrar-cliente",
+              "ttps://latinmovies.onrender.com/api/registrar-cliente",
               {
                 method: "POST",
                 headers: {
-                  "Content-Type": "application/json", // Asegúrate de incluir este header
+                  "Content-Type": "application/json",
                 },
-                body: JSON.stringify({ username, email, password }), // Enviar datos como JSON
+                body: JSON.stringify({ username, email, password }),
               }
             );
 
             const data = await response.json();
 
-            if (data.success) {
-              window.location.href = "/catalogo";
+            if (response.ok) {
+              window.location.href = "/promociones";
             } else {
+              console.error("Error del servidor:", data.message);
               alert(data.message || "Error en el registro.");
             }
           } catch (error) {

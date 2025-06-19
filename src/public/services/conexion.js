@@ -1,5 +1,6 @@
 import pg from 'pg';
 const { Client } = pg;
+import bcrypt from 'bcryptjs';
 
 const config = {
     user: 'bd_vortix_user',
@@ -37,29 +38,29 @@ export async function ConsultarProductos() {
     } finally {
         await cliente.end();
     }
-}
-export async function RegistrarCliente(username, password, email) {
+}export async function RegistrarCliente(username, password, email) {
     const cliente = new Client(config);
     try {
-       await cliente.connect();
-       const verficarQuery = 'SELECT * FROM cliente WHERE username = $1 OR email = $2';
-       const verificarValues = [username, email];
-       const verificarResultado = await cliente.query(verficarQuery, verificarValues);
-       if (verificarResultado.rows.length > 0) {
-           throw new Error('El nombre de usuario o el correo electrónico ya están en uso');
-       }
-       const saltRounds= 10;
-       const hashedPassword = await bcrypt.hash(password, saltRounds);
+        await cliente.connect();
+        const verificarQuery = 'SELECT * FROM cliente WHERE username = $1 OR email = $2';
+        const verificarValues = [username, email];
+        const verificarResultado = await cliente.query(verificarQuery, verificarValues);
+        if (verificarResultado.rows.length > 0) {
+            throw new Error('El nombre de usuario o el correo electrónico ya están en uso');
+        }
 
-       const insertQuery = `INSERT INTO cliente (username, password, email) VALUES ($1, $2, $3) RETURNING id, username, email`;
-       const insertarValues = [username, hashedPassword, email];
-       const resultado = await cliente.query(insertQuery, insertarValues);
+        const saltRounds = 10;
+        const hashedPassword = await bcrypt.hash(password, saltRounds);
 
-       return {
-            succes: true,
+        const insertQuery = `INSERT INTO cliente (username, password, email) VALUES ($1, $2, $3) RETURNING id, username, email`;
+        const insertarValues = [username, hashedPassword, email];
+        const resultado = await cliente.query(insertQuery, insertarValues);
+
+        return {
+            success: true, // Fixed typo
             message: 'Cliente registrado exitosamente',
             user: resultado.rows[0]
-       };
+        };
     } catch (error) {
         console.error('Error al registrar cliente:', error);
         return {
