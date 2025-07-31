@@ -1,6 +1,6 @@
 import { Router } from "express";
 const router = Router();
-import { RegistrarCliente , ConsultarProductos } from "../public/services/conexion.js";  
+import { RegistrarCliente , ConsultarProductos, LoginCliente } from "../public/services/conexion.js";  
 import bodyParser from "body-parser"; 
 
 router.get("/", (req, res) => {
@@ -14,6 +14,9 @@ router.get("/cartelera", (req, res) => {
 });
 router.get("/registro", (req, res) => {
     res.render("registrarCliente", { title: "Registro" });
+});
+router.get("/login", (req, res) => {
+    res.render("loginCliente", { title: "Login" });
 });
 
 
@@ -46,6 +49,28 @@ router.post("/api/registrar-cliente", async (req, res) => {
         res.status(400).json({ error: resultado.message });
     }
 });
+
+router.post('/api/login', async (req, res) => {
+    const { username, password } = req.body;
+
+    if (!username || !password) {
+        return res.status(400).json({ success: false, message: 'Usuario y contraseña son obligatorios' });
+    }
+
+    try {
+        const resultado = await LoginCliente(username, password);
+
+        if (resultado.success) {
+            res.status(200).json(resultado);
+        } else {
+            res.status(401).json(resultado);
+        }
+    } catch (error) {
+        console.error("❌ Error en /api/login:", error); // Muestra el error en consola
+        res.status(500).json({ success: false, message: 'Error interno del servidor' });
+    }
+});
+
 router.use(bodyParser.urlencoded({ extended: true }));
 router.use(bodyParser.json());
 

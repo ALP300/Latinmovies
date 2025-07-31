@@ -6,12 +6,33 @@
     <title>Mi primera web</title>
     <%- include('partials/head') %>
     <link rel="stylesheet" href="/css/index.css" />
+    <!-- Add Google Maps API Script -->
+   <script>
+      function initMap() {
+        // Map options
+        const mapOptions = {
+          center: { lat: -12.133434, lng: -76.984369 }, // Example coordinates
+          zoom: 19,
+        };
+        // Create a map object and specify the DOM element for display
+        const map = new google.maps.Map(document.getElementById("map"), mapOptions);
+      }
+      // No necesitas llamar a initMap aquí, Google lo llamará automáticamente
+    </script>
+    <script
+      src="https://maps.googleapis.com/maps/api/js?key=AIzaSyArSMWmPN8we93NKGCXkaoDqo07wDApCfg&callback=initMap"
+      async
+      defer
+    ></script>
   </head>
   <body>
     <%- include('partials/navigation') %>
     <h1 class="text1">Mi primera web service, siiiiiiii qué alegría</h1>
     <h1>AAAAAAAAAAAAAAAAAAAAA</h1>
     <h1>BBBBBBBBBBBBBBBBBBBBB</h1>
+    <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2955.5435291965186!2d-77.01465312776182!3d-12.189723624415647!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x9105b763bbff924d%3A0x69666f12f9f1808e!2sMercado%20Los%20Pinos!5e0!3m2!1ses-419!2spe!4v1750893262205!5m2!1ses-419!2spe" width="600" height="450" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+    <!-- Add a div for the map -->
+    <div id="map" style="height: 400px; width: 100%;"></div>
     <div id="carouselExample" class="carousel slide">
       <div class="carousel-inner">
         <div class="carousel-item active">
@@ -44,5 +65,6 @@
       </button>
     </div>
     <%- include('partials/bot') %>
+  
   </body>
 </html>

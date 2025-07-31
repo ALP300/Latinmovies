@@ -71,3 +71,45 @@ export async function ConsultarProductos() {
         await cliente.end();
     }
 }
+export async function LoginCliente(username, password) {
+    const cliente = new Client(config);
+    try {
+        await cliente.connect();
+
+        // Buscar al usuario por nombre de usuario
+        const query = 'SELECT * FROM cliente WHERE username = $1';
+        const valores = [username];
+        const resultado = await cliente.query(query, valores);
+
+        if (resultado.rows.length === 0) {
+            return { success: false, message: 'Usuario no encontrado' };
+        }
+
+        const usuario = resultado.rows[0];
+
+        // Comparar la contraseña proporcionada con la almacenada
+        const passwordMatch = await bcrypt.compare(password, usuario.password);
+
+        if (!passwordMatch) {
+            return { success: false, message: 'Contraseña incorrecta' };
+        }
+
+        return {
+            success: true,
+            message: 'Inicio de sesión exitoso',
+            user: {
+                id: usuario.id,
+                username: usuario.username,
+                email: usuario.email
+            }
+        };
+    } catch (error) {
+        console.error('Error en la función LoginCliente:', error);
+        return {
+            success: false,
+            message: 'Error en el servidor'
+        };
+    } finally {
+        await cliente.end();
+    }
+}
